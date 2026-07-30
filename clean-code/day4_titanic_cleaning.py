@@ -12,10 +12,16 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     df = df.dropna(subset=['Embarked'])
     return df
 
+def encoding(df:pd.DataFrame) -> pd.DataFrame:
+    """Encode categorical variables"""
+    df = pd.get_dummies(df, columns=['Sex', 'Embarked'], drop_first= True)
+    return df
+
 def main():
     df = load_data("data/train.csv")
     df = clean_data(df)
-    print(df.isnull().sum())
+    df= encoding(df)
+    print(df.info())
 
 if __name__ == "__main__":
     main()
