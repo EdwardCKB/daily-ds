@@ -21,6 +21,7 @@ def main():
     df = load_data("data/train.csv")
     df = clean_data(df)
     df = encoding(df)
+    print(df.info())
 
 if __name__ == "__main__":
     main()
