@@ -2,6 +2,7 @@ from day4_titanic_cleaning import load_data, clean_data, encoding
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 import pandas as pd
 
 
@@ -24,7 +25,16 @@ def logistic_regression_model(X_train: pd.DataFrame, y_train: pd.Series):
     model = LogisticRegression()
     model.fit(X_train, y_train)
     return model
-    
+
+def matrix_calculation(y_test, pred):
+    """Calculate model performance metrics"""
+    accuracy = accuracy_score(y_test, pred)
+    precision = precision_score(y_test, pred)
+    recall = recall_score(y_test, pred)
+    f1 = f1_score(y_test, pred)
+    matrix = confusion_matrix(y_test, pred)
+    return accuracy, precision, recall, f1, matrix
+
 def main():
     df = load_data("data/train.csv")
     df = clean_data(df)
@@ -35,7 +45,8 @@ def main():
     model = logistic_regression_model(X_train, y_train)
     print(pd.Series(model.coef_[0], index=feature_names))
     pred = model.predict(X_test)
-    #print(pred)
+    accuracy, precision, recall, f1, matrix = matrix_calculation(y_test, pred)
+    print(f"Accuracy: {accuracy}\nPrecision: {precision}\nRecall: {recall}\nF1: {f1}\nmatrix: {matrix}")
 
 if __name__ == "__main__":
     main()
