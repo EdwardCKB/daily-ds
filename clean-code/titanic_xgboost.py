@@ -4,6 +4,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import confusion_matrix
 from xgboost import XGBClassifier
 
 def xgboost_pipeline():
@@ -39,6 +40,7 @@ def main():
     pred = best_model.predict(X_test)
     accuracy, precision, recall, f1, matrix = matrix_calculation(y_test, pred)
     print(f"Accuracy: {accuracy}\nPrecision: {precision}\nRecall: {recall}\nF1: {f1}\nmatrix: {matrix}")
+    print(confusion_matrix(y_test, pred, labels=best_model.classes_))
     print(best_model.named_steps['model'].get_params())
 
 if __name__ == "__main__":
