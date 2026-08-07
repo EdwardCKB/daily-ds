@@ -39,6 +39,15 @@ def build_lasso_pipeline():
     ])
     return pipeline 
 
+def tune_lasso(pipeline, X_train, y_train):
+    """Construcing hyperparameter tunning to get model's best hyperparamters"""
+    param_grid = {
+        'model__alpha': [0.1, 1, 10, 50, 100, 500]
+    }
+    grid_search = GridSearchCV(pipeline, param_grid, cv=5, scoring='neg_mean_squared_error')
+    grid_search.fit(X_train, y_train)
+    return grid_search.best_estimator_  
+
 def evalutate_regression(y_test, pred):
     MAE = mean_absolute_error(y_test, pred)
     MSE = mean_squared_error(y_test, pred)
@@ -55,9 +64,11 @@ def main():
     ridge_pipeline = build_ridge_pipeline()
     ridge_pipeline.fit(X_train, y_train)
     ridge_pred = ridge_pipeline.predict(X_test)
+
     lasso_pipeline = build_lasso_pipeline()
-    lasso_pipeline.fit(X_train, y_train)
-    lasso_pred = lasso_pipeline.predict(X_test)
+    best_lasso_model = tune_lasso(lasso_pipeline, X_train, y_train)
+    lasso_pred = best_lasso_model.predict(X_test)
+
     r_MAE, r_MSE, r_R2 = evalutate_regression(y_test, ridge_pred)
     print(f"Ridge model metrics:\nMAE: {r_MAE}\nMSE: {r_MSE}\nR2: {r_R2}")
     l_MAE, l_MSE, l_R2 = evalutate_regression(y_test, lasso_pred)
@@ -66,7 +77,7 @@ def main():
 
     feature_names = ridge_pipeline.named_steps['preprocess'].get_feature_names_out()
     ridge_coefs = ridge_pipeline.named_steps['model'].coef_
-    lasso_coefs = lasso_pipeline.named_steps['model'].coef_
+    lasso_coefs = best_lasso_model.named_steps['model'].coef_
 
     comparison = pd.DataFrame({
         'feature': feature_names,
@@ -74,6 +85,7 @@ def main():
         'lasso': lasso_coefs
     })
     print(comparison)
+    print(best_lasso_model.named_steps['model'].alpha)
 
 
 if __name__ == "__main__":
