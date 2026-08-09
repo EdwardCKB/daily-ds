@@ -38,7 +38,6 @@ def main():
     accuracy, precision, recall, f1, matrix = matrix_calculation(y_test, pred)
     print(f"Best k value: k={best_knn_pipeline.named_steps['model'].get_params()['n_neighbors']}")
     print(f"Metrics for KNN model\nAccuracy:{accuracy}\nPrecision:{precision}\nrecall:{recall}\nF1:{f1}\nMatrix:{matrix}")
-
 if __name__ == "__main__":
     main()
     
