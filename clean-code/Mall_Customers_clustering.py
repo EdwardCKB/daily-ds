@@ -31,13 +31,36 @@ def plot_clusters(X_scaled, model):
     plt.savefig('mall_clusters.png', dpi=150)
     plt.show()
 
+def inertia_calculation(X_scaled):
+    nums = list(range(1,11))
+    inertia = {}
+    for k in nums:
+        model = build_kmeans(X_scaled, n_clusters=k)
+        i_inertia = model.inertia_
+        inertia[k] = i_inertia
+    return inertia
+
+def plot_elbow(inertia_dict):
+    """Plot k vs inertia to visually find the elbow"""
+    k_values = list(inertia_dict.keys())
+    inertia_values = list(inertia_dict.values())
+    plt.figure(figsize=(8, 5))
+    plt.plot(k_values, inertia_values, marker='o')
+    plt.xlabel('Number of clusters (k)')
+    plt.ylabel('Inertia')
+    plt.title('Elbow method for optimal k')
+    plt.savefig('elbow_plot.png', dpi=150)
+    plt.show()
+
 def main():
     df = load_data("data/Mall_Customers.csv")
     X_scaled = preprocess_for_clustering(df)
     model = build_kmeans(X_scaled, n_clusters=5)
-    print(model.labels_) # which cluster (0-4) each customer/row was assigned to
-    print(model.cluster_centers_) # the (x, y) position of each cluster's centroid, in scaled space
-    plot_clusters(X_scaled, model)
+    #print(model.labels_) # which cluster (0-4) each customer/row was assigned to
+    #print(model.cluster_centers_) # the (x, y) position of each cluster's centroid, in scaled space
+    #plot_clusters(X_scaled, model)
+    inertia_dict = inertia_calculation(X_scaled)
+    plot_elbow(inertia_dict)
 
 
 if __name__ == "__main__":
