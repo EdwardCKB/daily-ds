@@ -12,6 +12,16 @@ def preprocess_for_clustering(df):
     X_scaled = scaler.fit_transform(X)
     return X_scaled
 
+def preprocess_full_features(df):
+    """Encode Gender and scale all 4 relevant features"""
+    df = df.copy()
+    df['Gender_encoded'] = df['Gender'].map({'Male': 0, 'Female': 1})
+    features = df[['Age', 'Annual Income (k$)', 'Spending Score (1-100)', 'Gender_encoded']]
+    scaler = StandardScaler()
+    features_scaled = scaler.fit_transform(features)
+    return features_scaled
+    
+     
 def build_kmeans(X_scaled, n_clusters):
     """Fit K-means and return the fitted model"""
     model = KMeans(n_clusters=n_clusters, random_state=42)
@@ -31,6 +41,16 @@ def plot_clusters(X_scaled, model):
     plt.savefig('mall_clusters.png', dpi=150)
     plt.show()
 
+def plot_clusters_2d_slice(X_scaled, model):
+    """Cluster on all 4 features, but visualize only Income vs Spending Score"""
+    plt.figure(figsize=(8, 6))
+    plt.scatter(X_scaled[:, 1], X_scaled[:, 2], c=model.labels_, cmap='viridis', s=40)
+    plt.xlabel('Annual Income (scaled)')
+    plt.ylabel('Spending Score (scaled)')
+    plt.title('Full 4-feature clustering, viewed as Income vs Spending Score')
+    plt.savefig('mall_clusters_4feature_slice.png', dpi=150)
+    plt.show()
+    
 def inertia_calculation(X_scaled):
     nums = list(range(1,11))
     inertia = {}
@@ -54,13 +74,14 @@ def plot_elbow(inertia_dict):
 
 def main():
     df = load_data("data/Mall_Customers.csv")
-    X_scaled = preprocess_for_clustering(df)
-    model = build_kmeans(X_scaled, n_clusters=5)
+    features_scaled = preprocess_full_features(df)
+    model = build_kmeans(features_scaled, n_clusters=5)
     #print(model.labels_) # which cluster (0-4) each customer/row was assigned to
     #print(model.cluster_centers_) # the (x, y) position of each cluster's centroid, in scaled space
-    #plot_clusters(X_scaled, model)
-    inertia_dict = inertia_calculation(X_scaled)
-    plot_elbow(inertia_dict)
+    #plot_clusters(features_scaled, model)
+    plot_clusters_2d_slice(features_scaled, model)
+    #inertia_dict = inertia_calculation(X_scaled)
+    #plot_elbow(inertia_dict)
 
 
 if __name__ == "__main__":
