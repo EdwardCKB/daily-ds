@@ -2,7 +2,8 @@ from day4_titanic_cleaning import load_data
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
-
+from scipy.cluster.hierarchy import dendrogram, linkage
+from sklearn.cluster import AgglomerativeClustering
 
 
 def preprocess_for_clustering(df):
@@ -11,6 +12,7 @@ def preprocess_for_clustering(df):
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
     return X_scaled
+
 
 def preprocess_full_features(df):
     """Encode Gender and scale all 4 relevant features"""
@@ -21,7 +23,9 @@ def preprocess_full_features(df):
     features_scaled = scaler.fit_transform(features)
     return features_scaled
     
-     
+#========
+#K means
+#========
 def build_kmeans(X_scaled, n_clusters):
     """Fit K-means and return the fitted model"""
     model = KMeans(n_clusters=n_clusters, random_state=42)
@@ -72,16 +76,32 @@ def plot_elbow(inertia_dict):
     plt.savefig('elbow_plot.png', dpi=150)
     plt.show()
 
+
+#========================
+#Hierarchical Clustering
+#========================
+def plot_dendrogram(X_scaled):
+    """Build and plot a dendrogram using ward linkage"""
+    merge_sequence = linkage(X_scaled, method='ward')
+    plt.figure(figsize=(10, 6))
+    dendrogram(merge_sequence)
+    plt.xlabel('Customers')
+    plt.ylabel('Distance')
+    plt.title('Dendrogram (Ward linkage)')
+    plt.savefig('dendrogram.png', dpi=150)
+    plt.show()
+
 def main():
     df = load_data("data/Mall_Customers.csv")
-    features_scaled = preprocess_full_features(df)
-    model = build_kmeans(features_scaled, n_clusters=5)
+    X_scaled = preprocess_for_clustering(df)
+    #model = build_kmeans(features_scaled, n_clusters=5)
     #print(model.labels_) # which cluster (0-4) each customer/row was assigned to
     #print(model.cluster_centers_) # the (x, y) position of each cluster's centroid, in scaled space
     #plot_clusters(features_scaled, model)
-    plot_clusters_2d_slice(features_scaled, model)
+    #plot_clusters_2d_slice(features_scaled, model)
     #inertia_dict = inertia_calculation(X_scaled)
     #plot_elbow(inertia_dict)
+    plot_dendrogram(X_scaled)
 
 
 if __name__ == "__main__":
