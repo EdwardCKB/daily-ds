@@ -123,8 +123,13 @@ def plot_hierarchical_clusters(X_scaled, model):
 #========================
 def build_dbscan(X_scaled, eps, min_samples):
     """Building DBSCAN model"""
+    # unlike K-means/Hierarchical, no n_clusters here at all —
+    # DBSCAN decides cluster COUNT itself, based purely on density;
+    # eps = how close points need to be to count as neighbors,
+    # min_samples = how many neighbors needed to anchor a dense region
     model =  DBSCAN(eps=eps, min_samples=min_samples)
     model.fit(X_scaled)
+    # labels_ can include -1 for noise — points too isolated to belong to any dense region at all
     return model
 
 def plot_dbscan_clusters(X_scaled, model):
