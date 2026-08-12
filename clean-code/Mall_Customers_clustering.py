@@ -1,6 +1,6 @@
 from day4_titanic_cleaning import load_data
 from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, DBSCAN
 import matplotlib.pyplot as plt
 from scipy.cluster.hierarchy import dendrogram, linkage
 from sklearn.cluster import AgglomerativeClustering
@@ -118,10 +118,29 @@ def plot_hierarchical_clusters(X_scaled, model):
     plt.savefig('hierarchical_clusters.png', dpi=150)
     plt.show()
 
+#========================
+#DBSCAN
+#========================
+def build_dbscan(X_scaled, eps, min_samples):
+    """Building DBSCAN model"""
+    model =  DBSCAN(eps=eps, min_samples=min_samples)
+    model.fit(X_scaled)
+    return model
+
+def plot_dbscan_clusters(X_scaled, model):
+    """Scatter plot of customers colored by DBSCAN cluster assignment, noise in gray"""
+    plt.figure(figsize=(8, 6))
+    plt.scatter(X_scaled[:, 0], X_scaled[:, 1], c=model.labels_, cmap='viridis', s=40)
+    plt.xlabel('Annual Income (scaled)')
+    plt.ylabel('Spending Score (scaled)')
+    plt.title('Customer segments (DBSCAN)')
+    plt.savefig('dbscan_clusters.png', dpi=150)
+    plt.show()
+
 def main():
     df = load_data("data/Mall_Customers.csv")
     X_scaled = preprocess_for_clustering(df)
-    model = build_heirarchical(X_scaled, 5)
+    model = build_dbscan(X_scaled, 0.3, 5)
     #model = build_kmeans(features_scaled, n_clusters=5)
     #print(model.labels_) # which cluster (0-4) each customer/row was assigned to
     #print(model.cluster_centers_) # the (x, y) position of each cluster's centroid, in scaled space
@@ -129,7 +148,8 @@ def main():
     #plot_clusters_2d_slice(features_scaled, model)
     #inertia_dict = inertia_calculation(X_scaled)
     #plot_elbow(inertia_dict)
-    plot_hierarchical_clusters(X_scaled, model)
+    #plot_hierarchical_clusters(X_scaled, model)
+    plot_dbscan_clusters(X_scaled, model)
 
 
 if __name__ == "__main__":
