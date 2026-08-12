@@ -82,18 +82,46 @@ def plot_elbow(inertia_dict):
 #========================
 def plot_dendrogram(X_scaled):
     """Build and plot a dendrogram using ward linkage"""
+    # compute the full merge history (every step from 200 individual
+    # points down to 1 giant cluster), using Ward linkage
     merge_sequence = linkage(X_scaled, method='ward')
     plt.figure(figsize=(10, 6))
-    dendrogram(merge_sequence)
+    dendrogram(merge_sequence, color_threshold=0)
     plt.xlabel('Customers')
     plt.ylabel('Distance')
     plt.title('Dendrogram (Ward linkage)')
     plt.savefig('dendrogram.png', dpi=150)
     plt.show()
+    # this plot is only for DECIDING n_clusters — find the biggest
+    # gap, count how many vertical lines a cut through that gap
+    # crosses, that's the number to use below
+
+def build_heirarchical(X_scaled, n_clusters):
+    """Fit Agglomerative Clustering and return the fitted model"""
+    # same bottom-up merging as above, but this time it stops the
+    # moment it reaches exactly n groups (chosen from the dendrogram)
+    # instead of merging all the way down to 1
+    model = AgglomerativeClustering(n_clusters=n_clusters)
+    model.fit(X_scaled)
+    return model
+
+def plot_hierarchical_clusters(X_scaled, model):
+    """Scatter plot of customers colored by hierarchical cluster assignment"""
+    # model already stopped merging and assigned each point a final
+    # label (0 to n-1) — no tree left to draw, just plot like K-means:
+    # real coordinates, colored by that final label
+    plt.figure(figsize=(8, 6))
+    plt.scatter(X_scaled[:, 0], X_scaled[:, 1], c=model.labels_, cmap='viridis', s=40)
+    plt.xlabel('Annual Income (scaled)')
+    plt.ylabel('Spending Score (scaled)')
+    plt.title('Customer segments (Hierarchical, n_clusters=5)')
+    plt.savefig('hierarchical_clusters.png', dpi=150)
+    plt.show()
 
 def main():
     df = load_data("data/Mall_Customers.csv")
     X_scaled = preprocess_for_clustering(df)
+    model = build_heirarchical(X_scaled, 5)
     #model = build_kmeans(features_scaled, n_clusters=5)
     #print(model.labels_) # which cluster (0-4) each customer/row was assigned to
     #print(model.cluster_centers_) # the (x, y) position of each cluster's centroid, in scaled space
@@ -101,7 +129,7 @@ def main():
     #plot_clusters_2d_slice(features_scaled, model)
     #inertia_dict = inertia_calculation(X_scaled)
     #plot_elbow(inertia_dict)
-    plot_dendrogram(X_scaled)
+    plot_hierarchical_clusters(X_scaled, model)
 
 
 if __name__ == "__main__":
