@@ -4,7 +4,7 @@ from sklearn.cluster import KMeans, DBSCAN
 import matplotlib.pyplot as plt
 from scipy.cluster.hierarchy import dendrogram, linkage
 from sklearn.cluster import AgglomerativeClustering
-
+import numpy as np
 
 def preprocess_for_clustering(df):
     """Select and scale Annual Income and Spending Score for clustering"""
@@ -140,7 +140,7 @@ def plot_dbscan_clusters(X_scaled, model):
 def main():
     df = load_data("data/Mall_Customers.csv")
     X_scaled = preprocess_for_clustering(df)
-    model = build_dbscan(X_scaled, 0.3, 5)
+    model = build_dbscan(X_scaled, 0.35, 5)
     #model = build_kmeans(features_scaled, n_clusters=5)
     #print(model.labels_) # which cluster (0-4) each customer/row was assigned to
     #print(model.cluster_centers_) # the (x, y) position of each cluster's centroid, in scaled space
@@ -150,6 +150,8 @@ def main():
     #plot_elbow(inertia_dict)
     #plot_hierarchical_clusters(X_scaled, model)
     plot_dbscan_clusters(X_scaled, model)
+    print(np.unique(model.labels_, return_counts=True))
+
 
 
 if __name__ == "__main__":
