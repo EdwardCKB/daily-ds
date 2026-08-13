@@ -12,6 +12,7 @@ def split_train_test(df:pd.DataFrame, test_size:float):
     """Split my dataset into X, y, train and test"""
     y = df["charges"]
     X = df.drop(columns=["charges"])
+    # no stratify here — stratify is for classification class balance, charges is continuous (nearly unique per row), nothing to balance
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
     return X_train, y_train, X_test, y_test
 
@@ -23,7 +24,10 @@ def build_ridge_pipeline():
     ])
     pipeline = Pipeline(steps=[
         ('preprocess', preprocessor),
-        ('model', Ridge(random_state=42)) #Ridge = Linear Regression + L2(Ridge penalty) built in
+        ('model', Ridge(random_state=42)) 
+        # Ridge = Linear Regression + L2 penalty, ALWAYS on
+        # loss = error + alpha * sum(coef^2) — squares the coefficients,
+        # so it shrinks them all smaller but essentially never to exactly 0
     ])
     return pipeline
 
@@ -35,7 +39,11 @@ def build_lasso_pipeline():
     ])
     pipeline = Pipeline(steps=[
         ('preprocess', preprocessor),
-        ('model', Lasso(random_state=42)) #Lasso = Linear Regression + L1 penalty
+        ('model', Lasso(random_state=42))
+        # Lasso = Linear Regression + L1 penalty
+        # loss = error + alpha * sum(|coef|) — absolute value instead of
+        # squaring, and THIS is exactly why Lasso can zero coefficients
+        # out completely (feature elimination) while Ridge can't 
     ])
     return pipeline 
 
@@ -43,10 +51,19 @@ def tune_lasso(pipeline, X_train, y_train):
     """Construcing hyperparameter tunning to get model's best hyperparamters"""
     param_grid = {
         'model__alpha': [0.1, 1, 10, 50, 100, 500]
+        # alpha = the penalty multiplier itself (the lambda in the loss
+        # formula above) — bigger alpha = bigger "fine" for large
+        # coefficients = model shrinks/zeroes them more aggressively
     }
+    # GridSearchCV always MAXIMIZES the scoring metric, but lower MSE is
+    # better — so sklearn flips the sign (neg_mean_squared_error) so that
+    # "maximize" still correctly means "minimize actual error"
     grid_search = GridSearchCV(pipeline, param_grid, cv=5, scoring='neg_mean_squared_error')
     grid_search.fit(X_train, y_train)
     return grid_search.best_estimator_  
+    # best_estimator_ is a NEW fitted pipeline — GridSearchCV clones and
+    # fits internal copies, it never touches/fits the original pipeline
+    # object passed in, so pulling .coef_ from the original would fail
 
 def evalutate_regression(y_test, pred):
     MAE = mean_absolute_error(y_test, pred)
@@ -75,9 +92,15 @@ def main():
     print("=======================")
     print(f"Lasso model metrics:\nMAE: {l_MAE}\nMSE: {l_MSE}\nR2: {l_R2}")
 
+    # get_feature_names_out() reconstructs real column names (e.g.
+    # sex_male) after ColumnTransformer turns everything into an
+    # unlabeled NumPy array — same "lost .columns" issue from Titanic
     feature_names = ridge_pipeline.named_steps['preprocess'].get_feature_names_out()
     ridge_coefs = ridge_pipeline.named_steps['model'].coef_
     lasso_coefs = best_lasso_model.named_steps['model'].coef_
+    # coef_ exists on Ridge/Lasso because they're still linear models —
+    # regularization changes HOW the coefficients get picked during
+    # training, it doesn't remove the weighted-sum structure itself
 
     comparison = pd.DataFrame({
         'feature': feature_names,
@@ -86,6 +109,9 @@ def main():
     })
     print(comparison)
     print(best_lasso_model.named_steps['model'].alpha)
+    # RESULT: tuned Lasso zeroed out sex_male and all 3 region columns —
+    # real proof that alpha got large enough to make those weak features
+    # not worth their penalty cost, while Ridge kept them small-but-nonzero
 
 
 if __name__ == "__main__":
