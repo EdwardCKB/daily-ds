@@ -4,6 +4,7 @@ from sklearn.cluster import KMeans, DBSCAN
 import matplotlib.pyplot as plt
 from scipy.cluster.hierarchy import dendrogram, linkage
 from sklearn.cluster import AgglomerativeClustering
+from sklearn.decomposition import PCA
 import numpy as np
 
 def preprocess_for_clustering(df):
@@ -118,9 +119,9 @@ def plot_hierarchical_clusters(X_scaled, model):
     plt.savefig('hierarchical_clusters.png', dpi=150)
     plt.show()
 
-#========================
+#=======
 #DBSCAN
-#========================
+#=======
 def build_dbscan(X_scaled, eps, min_samples):
     """Building DBSCAN model"""
     # unlike K-means/Hierarchical, no n_clusters here at all —
@@ -142,10 +143,57 @@ def plot_dbscan_clusters(X_scaled, model):
     plt.savefig('dbscan_clusters.png', dpi=150)
     plt.show()
 
+
+#========
+#PCA/LDA
+#========
+def pca_variance_check(X_scaled):
+    pca_test = PCA(n_components=X_scaled.shape[1])
+    X_pca = pca_test.fit_transform(X_scaled)
+    print(pca_test.explained_variance_ratio_)
+    print(pca_test.explained_variance_ratio_.cumsum())
+    return X_pca
+
+def pca_2d_plot(X_scaled):
+    """Fit PCA with 2 components and plot the reduced data"""
+    pca = PCA(n_components=2)
+    X_pca = pca.fit_transform(X_scaled)
+
+    plt.figure(figsize=(8, 6))
+    #plt.scatter(X_pca[:, 0], X_pca[:, 1], s=40, c='teal')
+    plt.xlabel('Principal Component 1')
+    plt.ylabel('Principal Component 2')
+    plt.title('Mall Customers — PCA (2 components)')
+    plt.savefig('pca_2d.png', dpi=150)
+    plt.show()
+
+    return X_pca
+
+def build_kmeans_pca(X_pca, n_clusters):
+    """Fit K-means directly on PCA-reduced data and return the fitted model"""
+    model = KMeans(n_clusters=n_clusters, random_state=42)
+    model.fit(X_pca)
+    return model
+
+
+def plot_pca_clusters(X_pca, model):
+    """Scatter plot of PCA-reduced data, colored by cluster assignment"""
+    plt.figure(figsize=(8, 6))
+    plt.scatter(X_pca[:, 0], X_pca[:, 1], c=model.labels_, cmap='viridis', s=40)
+    plt.xlabel('Principal Component 1')
+    plt.ylabel('Principal Component 2')
+    plt.title('Mall Customers — K-means on PCA-reduced data')
+    plt.savefig('pca_kmeans.png', dpi=150)
+    plt.show()
+
 def main():
     df = load_data("data/Mall_Customers.csv")
-    X_scaled = preprocess_for_clustering(df)
-    model = build_dbscan(X_scaled, 0.35, 5)
+    X_scaled = preprocess_full_features(df)
+    X_pca = pca_variance_check(X_scaled)
+    kmeans_pca_model = build_kmeans_pca(X_pca, n_clusters=5)
+    plot_pca_clusters(X_pca, kmeans_pca_model)
+    #X_pca = pca_2d_plot(X_scaled)
+    #model = build_dbscan(X_scaled, 0.35, 5)
     #model = build_kmeans(features_scaled, n_clusters=5)
     #print(model.labels_) # which cluster (0-4) each customer/row was assigned to
     #print(model.cluster_centers_) # the (x, y) position of each cluster's centroid, in scaled space
@@ -154,8 +202,8 @@ def main():
     #inertia_dict = inertia_calculation(X_scaled)
     #plot_elbow(inertia_dict)
     #plot_hierarchical_clusters(X_scaled, model)
-    plot_dbscan_clusters(X_scaled, model)
-    print(np.unique(model.labels_, return_counts=True))
+    #plot_dbscan_clusters(X_scaled, model)
+    #print(np.unique(model.labels_, return_counts=True))
 
 
 
