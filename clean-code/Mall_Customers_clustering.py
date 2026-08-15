@@ -148,19 +148,32 @@ def plot_dbscan_clusters(X_scaled, model):
 #PCA/LDA
 #========
 def pca_variance_check(X_scaled):
+    """Fit PCA with all components to inspect variance explained per component"""
     pca_test = PCA(n_components=X_scaled.shape[1])
     X_pca = pca_test.fit_transform(X_scaled)
     print(pca_test.explained_variance_ratio_)
     print(pca_test.explained_variance_ratio_.cumsum())
     return X_pca
+    # NOTE on choosing n_components: this variance-based approach only
+    # works because there's no target here (Mall Customers is unsupervised).
+    # GridSearchCV would be the right tool INSTEAD of this, but only once
+    # PCA feeds into an actual supervised model with a score to optimize —
+    # two different questions ("how much info preserved" vs "best final
+    # model performance"), not interchangeable methods for the same thing
 
 def pca_2d_plot(X_scaled):
     """Fit PCA with 2 components and plot the reduced data"""
+    # this is its own fresh PCA object, only ever computing 2 components —
+    # not the same object as pca_variance_check, and not "take 4 and
+    # slice to 2" (though mathematically that would give identical numbers,
+    # since PC1 doesn't change based on how many total components you ask for)
     pca = PCA(n_components=2)
     X_pca = pca.fit_transform(X_scaled)
 
     plt.figure(figsize=(8, 6))
-    #plt.scatter(X_pca[:, 0], X_pca[:, 1], s=40, c='teal')
+    plt.scatter(X_pca[:, 0], X_pca[:, 1], s=40, c='teal')
+    # axes are PC1/PC2 — combined/rotated blends of all 4 original
+    # features, not any single real-world quantity like Income
     plt.xlabel('Principal Component 1')
     plt.ylabel('Principal Component 2')
     plt.title('Mall Customers — PCA (2 components)')
