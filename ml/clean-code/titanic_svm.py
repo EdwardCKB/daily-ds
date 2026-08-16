@@ -61,7 +61,7 @@ def plot_svm_boundary(best_svm_pipeline, df):
     plt.ylabel('Fare (scaled)')
     plt.title(f'SVM boundary (kernel={best_kernel}, C={best_C}) — Sex vs Fare')
     plt.legend()
-    plt.savefig('svm_boundary_sex.png', dpi=150)
+    plt.savefig('plots/svm_boundary_sex.png', dpi=150)
     plt.show()
     
 def main():
