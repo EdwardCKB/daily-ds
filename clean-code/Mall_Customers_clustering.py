@@ -144,9 +144,9 @@ def plot_dbscan_clusters(X_scaled, model):
     plt.show()
 
 
-#========
-#PCA/LDA
-#========
+#====
+#PCA
+#====
 def pca_variance_check(X_scaled):
     """Fit PCA with all components to inspect variance explained per component"""
     pca_test = PCA(n_components=X_scaled.shape[1])
