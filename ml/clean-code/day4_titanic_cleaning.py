@@ -18,7 +18,7 @@ def encoding(df:pd.DataFrame) -> pd.DataFrame:
     return df
 
 def main():
-    df = load_data("data/train.csv")
+    df = load_data("ml/data/train.csv")
     df = clean_data(df)
     df = encoding(df)
     print(df.info())

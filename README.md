@@ -1,4 +1,4 @@
-# daily-ds
+# Daily-ds
 
 Personal daily practice repository for Data Science, Machine Learning, and AI — structured by topic, built with clean coding habits.
 

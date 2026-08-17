@@ -19,7 +19,7 @@ def build_naivebayes_pipeline():
     return pipeline
 
 def main():
-    df = load_data('data/train.csv')
+    df = load_data('ml/data/train.csv')
     df = clean_data(df)
     X_train, X_test, y_train, y_test = train_test_split_data(df, 0.2)
     nb_pipeline = build_naivebayes_pipeline()

@@ -43,7 +43,7 @@ def plot_clusters(X_scaled, model):
     plt.ylabel('Spending Score (scaled)')
     plt.title('Customer segments (K-means, k=5)')
     plt.legend()
-    plt.savefig('plots/mall_clusters.png', dpi=150)
+    plt.savefig('ml/plots/mall_clusters.png', dpi=150)
     plt.show()
 
 def plot_clusters_2d_slice(X_scaled, model):
@@ -53,7 +53,7 @@ def plot_clusters_2d_slice(X_scaled, model):
     plt.xlabel('Annual Income (scaled)')
     plt.ylabel('Spending Score (scaled)')
     plt.title('Full 4-feature clustering, viewed as Income vs Spending Score')
-    plt.savefig('plots/mall_clusters_4feature_slice.png', dpi=150)
+    plt.savefig('ml/plots/mall_clusters_4feature_slice.png', dpi=150)
     plt.show()
     
 def inertia_calculation(X_scaled):
@@ -74,7 +74,7 @@ def plot_elbow(inertia_dict):
     plt.xlabel('Number of clusters (k)')
     plt.ylabel('Inertia')
     plt.title('Elbow method for optimal k')
-    plt.savefig('plots/elbow_plot.png', dpi=150)
+    plt.savefig('ml/plots/elbow_plot.png', dpi=150)
     plt.show()
 
 
@@ -91,7 +91,7 @@ def plot_dendrogram(X_scaled):
     plt.xlabel('Customers')
     plt.ylabel('Distance')
     plt.title('Dendrogram (Ward linkage)')
-    plt.savefig('plots/dendrogram.png', dpi=150)
+    plt.savefig('ml/plots/dendrogram.png', dpi=150)
     plt.show()
     # this plot is only for DECIDING n_clusters — find the biggest
     # gap, count how many vertical lines a cut through that gap
@@ -116,7 +116,7 @@ def plot_hierarchical_clusters(X_scaled, model):
     plt.xlabel('Annual Income (scaled)')
     plt.ylabel('Spending Score (scaled)')
     plt.title('Customer segments (Hierarchical, n_clusters=5)')
-    plt.savefig('plots/hierarchical_clusters.png', dpi=150)
+    plt.savefig('ml/plots/hierarchical_clusters.png', dpi=150)
     plt.show()
 
 #=======
@@ -140,7 +140,7 @@ def plot_dbscan_clusters(X_scaled, model):
     plt.xlabel('Annual Income (scaled)')
     plt.ylabel('Spending Score (scaled)')
     plt.title('Customer segments (DBSCAN)')
-    plt.savefig('plots/dbscan_clusters.png', dpi=150)
+    plt.savefig('ml/plots/dbscan_clusters.png', dpi=150)
     plt.show()
 
 
@@ -177,7 +177,7 @@ def pca_2d_plot(X_scaled):
     plt.xlabel('Principal Component 1')
     plt.ylabel('Principal Component 2')
     plt.title('Mall Customers — PCA (2 components)')
-    plt.savefig('plots/pca_2d.png', dpi=150)
+    plt.savefig('ml/plots/pca_2d.png', dpi=150)
     plt.show()
 
     return X_pca
@@ -196,11 +196,11 @@ def plot_pca_clusters(X_pca, model):
     plt.xlabel('Principal Component 1')
     plt.ylabel('Principal Component 2')
     plt.title('Mall Customers — K-means on PCA-reduced data')
-    plt.savefig('plots/pca_kmeans.png', dpi=150)
+    plt.savefig('ml/plots/pca_kmeans.png', dpi=150)
     plt.show()
 
 def main():
-    df = load_data("data/Mall_Customers.csv")
+    df = load_data("ml/data/Mall_Customers.csv")
     X_scaled = preprocess_full_features(df)
     X_pca = pca_variance_check(X_scaled)
     kmeans_pca_model = build_kmeans_pca(X_pca, n_clusters=5)

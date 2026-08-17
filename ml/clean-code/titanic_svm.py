@@ -61,11 +61,11 @@ def plot_svm_boundary(best_svm_pipeline, df):
     plt.ylabel('Fare (scaled)')
     plt.title(f'SVM boundary (kernel={best_kernel}, C={best_C}) — Sex vs Fare')
     plt.legend()
-    plt.savefig('plots/svm_boundary_sex.png', dpi=150)
+    plt.savefig('ml/plots/svm_boundary_sex.png', dpi=150)
     plt.show()
     
 def main():
-    df = load_data("data/train.csv")
+    df = load_data("ml/data/train.csv")
     df = clean_data(df)
     X_train, X_test, y_train, y_test = train_test_split_data(df, 0.2)
     svm_pipeline = build_svm_pipeline()

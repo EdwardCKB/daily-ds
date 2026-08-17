@@ -29,7 +29,7 @@ def hyperparameter_tunning(pipeline, X_train, y_train):
     return grid_search.best_estimator_
 
 def main():
-    df = load_data("data/train.csv")
+    df = load_data("ml/data/train.csv")
     df = clean_data(df)
     X_train, X_test, y_train, y_test = train_test_split_data(df, 0.2)
     knn_pipeline = build_knn_pipeline()

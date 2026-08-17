@@ -73,7 +73,7 @@ def evalutate_regression(y_test, pred):
 
 
 def main():
-    df = load_data("data/insurance.csv")
+    df = load_data("ml/data/insurance.csv")
     #print(df.info())
     #print(df.nunique())
     #print(df.shape)

@@ -35,7 +35,7 @@ def build_lda(X_scaled, y_train):
 
 
 def main():
-    df = load_data('data/train.csv')
+    df = load_data('ml/data/train.csv')
     df = clean_data(df)
     X_train, X_test, y_train, y_test = train_test_split_data(df, 0.2)
 
