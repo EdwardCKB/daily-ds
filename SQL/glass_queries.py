@@ -11,7 +11,16 @@ result = duckdb.sql("""
     -- worth using instead if skipped numbers would be a problem for your use case
 """).df()
 
-print(result)
+res = duckdb.sql("""
+    WITH ranked AS (
+        SELECT *,
+            RANK() OVER (PARTITION BY Type ORDER BY RI DESC) as rn
+        FROM 'ml/data/glass.csv')
+    SELECT *
+    FROM ranked
+    WHERE rn = 1
+    ORDER BY Type
+""").df()
 
-
+print(res)
 
