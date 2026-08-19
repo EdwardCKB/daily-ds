@@ -34,9 +34,16 @@ ses_3 = duckdb.sql("""
 # Moving Average 
 ses_4 =duckdb.sql("""
     SELECT *,
-        AVG(Fe) OVER (ORDER BY RI ASC ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS moving_avg_3
+    AVG(Fe) OVER (ORDER BY RI ASC ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS moving_avg_3
+    -- explicit 3-row frame: 2 rows before + current row.
+    -- Handles the start-of-data edge case gracefully — row 0 has
+    -- only itself (avg of 1 value), row 1 has 2 rows available,
+    -- only row 2 onward gets a genuine full 3-row window
     FROM 'ml/data/glass.csv'
-    ORDER BY RI ASC
+    ORDER BY RI ASC 
+    -- this outer ORDER BY is what actually guarantees rows print in RI
+    -- order — without it, output row order isn't guaranteed even though
+    -- the calculation itself was still done correctly in RI sequence
 """).df()
 print(ses_4)
 
