@@ -1,6 +1,7 @@
 import duckdb
 
-result = duckdb.sql("""
+# PARTITION BY and Dense() vs Dense_rank()
+ses_1 = duckdb.sql("""
     SELECT *, 
         RANK() OVER(PARTITION BY Type ORDER BY RI DESC) AS ri_rank
     FROM 'ml/data/glass.csv' 
@@ -11,7 +12,7 @@ result = duckdb.sql("""
     -- worth using instead if skipped numbers would be a problem for your use case
 """).df()
 
-res = duckdb.sql("""
+ses_2 = duckdb.sql("""
     WITH ranked AS (
         SELECT *,
             RANK() OVER (PARTITION BY Type ORDER BY RI DESC) as rn
@@ -22,5 +23,20 @@ res = duckdb.sql("""
     ORDER BY Type
 """).df()
 
-print(res)
+# Running sum
+ses_3 = duckdb.sql("""
+    SELECT *,
+        SUM(Fe) OVER (ORDER BY RI ASC) AS running_sum
+    FROM 'ml/data/glass.csv'
+    ORDER BY RI ASC
+""").df()
+
+# Moving Average 
+ses_4 =duckdb.sql("""
+    SELECT *,
+        AVG(Fe) OVER (ORDER BY RI ASC ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS moving_avg_3
+    FROM 'ml/data/glass.csv'
+    ORDER BY RI ASC
+""").df()
+print(ses_4)
 
