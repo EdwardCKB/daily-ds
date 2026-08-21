@@ -45,5 +45,17 @@ ses_4 =duckdb.sql("""
     -- order — without it, output row order isn't guaranteed even though
     -- the calculation itself was still done correctly in RI sequence
 """).df()
-print(ses_4)
+
+# CTE
+ses_5 = duckdb.sql("""
+    WITH average_type AS (
+        SELECT Type, AVG(RI) AS avg_ri, COUNT(*) AS type_count
+        FROM 'ml/data/glass.csv'
+        GROUP BY Type
+    )
+    SELECT * 
+    FROM average_type
+    WHERE type_count > 10
+""").df()
+print(ses_5)
 
