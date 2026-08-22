@@ -12,8 +12,8 @@ daily-ds/
 │   ├── clean-code/        # Implementations (clean coding practices)
 │   ├── data/              # Datasets
 │   └── plots/             # Generated visualizations
-├── sql/                   # SQL (coming soon)
-└── deep-learning/         # Deep Learning (coming soon)
+├── sql/                   # SQL 
+└── deep-learning/         # Deep Learning 
 ```
 
 ---

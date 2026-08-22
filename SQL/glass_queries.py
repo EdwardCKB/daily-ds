@@ -57,5 +57,27 @@ ses_5 = duckdb.sql("""
     FROM average_type
     WHERE type_count > 10
 """).df()
-print(ses_5)
+
+# Quey optimization
+
+# General rule: filter early whenever the filter doesn't depend on a
+# later computation; when it does (like ranking), the full pass is
+# unavoidable — recognizing which situation you're in is the actual skill
+
+ses_6 = duckdb.sql("EXPLAIN SELECT * FROM 'ml/data/glass.csv' WHERE Type = 1").df()
+
+result = duckdb.sql("""
+    EXPLAIN
+    WITH ranked AS (
+        SELECT *,
+            RANK() OVER (PARTITION BY Type ORDER BY RI DESC) AS rn
+        FROM 'ml/data/glass.csv'
+    )
+    SELECT *
+    FROM ranked
+    WHERE rn = 1
+""").df()
+print(result['explain_value'][0])
+
+#print(ses_6['explain_value'][0])
 
