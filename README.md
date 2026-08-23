@@ -60,7 +60,7 @@ Generated plots are saved to `ml/plots/`.
 ## Roadmap
 
 - [x] Machine Learning — classification, regression, clustering, PCA
-- [ ] SQL
+- [x] SQL
 - [ ] Deep Learning
 - [ ] NLP
 - [ ] Computer Vision
@@ -69,7 +69,9 @@ Generated plots are saved to `ml/plots/`.
 
 ## Tech Stack
 
-- Python 3
+- Python 
 - scikit-learn · XGBoost
+- DuckDB, SQL
 - pandas · numpy
 - matplotlib · seaborn
+- Tensorflow, Pytorch
