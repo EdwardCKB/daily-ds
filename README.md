@@ -4,6 +4,18 @@ Personal daily practice repository for Data Science, Machine Learning, and AI �
 
 ---
 
+## Tech Stack
+
+| Category | Tools |
+|---|---|
+| Language | Python |
+| Machine Learning | scikit-learn, XGBoost |
+| Deep Learning | TensorFlow, PyTorch |
+| Data | pandas, numpy, SQL (DuckDB) |
+| Visualization | matplotlib, seaborn |
+
+---
+
 ## Repository Structure
 
 ```
@@ -12,48 +24,27 @@ daily-ds/
 │   ├── clean-code/        # Implementations (clean coding practices)
 │   ├── data/              # Datasets
 │   └── plots/             # Generated visualizations
-├── sql/                   # SQL 
-└── deep-learning/         # Deep Learning 
+├── SQL/                   # SQL
+└── deep-learning/         # Deep Learning
 ```
 
 ---
 
-## Machine Learning
+## Supervised Learning
 
-### Algorithms Covered
+Classification (Logistic Regression, KNN, Naive Bayes, LDA, SVM, Random Forest, XGBoost) on Titanic survival prediction, plus regression (Ridge & Lasso) on insurance charge prediction. Also exploring class imbalance handling (SMOTE) and model comparisons on the Glass dataset.
 
-| Category | Algorithm | Dataset | Script |
-|---|---|---|---|
-| Classification | Logistic Regression | Titanic | `titanic_logistic_regression.py` |
-| Classification | KNN | Titanic | `titanic_knn.py` |
-| Classification | Naive Bayes | Titanic | `titanic_naive_bayes.py` |
-| Classification | LDA | Titanic | `titanic_lda.py` |
-| Classification | SVM | Titanic | `titanic_svm.py` |
-| Classification | Random Forest | Titanic | `titanic_random_forest.py` |
-| Classification | XGBoost | Titanic | `titanic_xgboost.py` |
-| Regression | Ridge & Lasso | Insurance | `insurance_regularization.py` |
-| Clustering | K-Means / Hierarchical / DBSCAN | Mall Customers | `Mall_Customers_clustering.py` |
-| Dimensionality Reduction | PCA | Mall Customers | `Mall_Customers_clustering.py` |
+## Unsupervised Learning
 
-### Datasets
+Clustering (K-Means, Hierarchical, DBSCAN) and dimensionality reduction (PCA) applied to customer segmentation on the Mall Customers dataset.
 
-| Dataset | File | Task |
-|---|---|---|
-| Titanic | `train.csv` | Binary classification (survival prediction) |
-| Mall Customers | `Mall_Customers.csv` | Unsupervised clustering (customer segmentation) |
-| Insurance | `insurance.csv` | Regression (charge prediction) |
+## SQL
 
-### Running Scripts
+DuckDB-based practice covering window functions (RANK/DENSE_RANK, running sums, moving averages), CTEs, and query optimization.
 
-Run from the `ml/` directory:
+## Deep Learning
 
-```bash
-cd ml/
-python clean-code/titanic_logistic_regression.py
-python clean-code/Mall_Customers_clustering.py
-```
-
-Generated plots are saved to `ml/plots/`.
+Tensor fundamentals (shape, element-wise ops, matmul) and sequential neural network architectures, built and cross-verified in both TensorFlow and PyTorch.
 
 ---
 
@@ -64,14 +55,3 @@ Generated plots are saved to `ml/plots/`.
 - [ ] Deep Learning
 - [ ] NLP
 - [ ] Computer Vision
-
----
-
-## Tech Stack
-
-- Python 
-- scikit-learn · XGBoost
-- DuckDB, SQL
-- pandas · numpy
-- matplotlib · seaborn
-- Tensorflow, Pytorch
