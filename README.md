@@ -52,6 +52,6 @@ Tensor fundamentals (shape, element-wise ops, matmul) and sequential neural netw
 
 - [x] Machine Learning — classification, regression, clustering, PCA
 - [x] SQL
-- [ ] Deep Learning
+- [x] Deep Learning
 - [ ] NLP
 - [ ] Computer Vision
