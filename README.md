@@ -51,7 +51,8 @@ Tensor fundamentals (shape, element-wise ops, matmul) and sequential neural netw
 ## Roadmap
 
 - [x] Machine Learning — classification, regression, clustering, PCA
-- [x] SQL
-- [x] Deep Learning
-- [ ] NLP
-- [ ] Computer Vision
+- [] SQL
+- [] MLOps
+- [] A/B testing
+- [x] NLP
+- [x] Computer Vision
